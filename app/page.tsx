@@ -23,10 +23,10 @@ export default function Home() {
 
 					{/* Call to Action */}
 					<div className=" flex flex-col justify-center mx-auto px-2 py-8 w-full">
-						<h1 className="text-5xl font-semibold ">
+						<h1 className="text-5xl font-semibold item-end">
 							Shaun Lesedi Modipane <Titles />
 						</h1>
-						<h2 className="text-3xl font-light mt-4 text-gray-700/80 text-center ">
+						<h2 className="text-3xl font-extralight mt-4 mx-auto text-gray-600/80 text-center max-w-[84%]">
 							Ready to bring technical talent to your next big project. Let&apos;s connect to
 							discuss how we can build something great together.
 						</h2>
@@ -34,12 +34,19 @@ export default function Home() {
 
 					{/* Call to Action Buttons */}
 					<div className="flex justify-center mt-2 items-center">
-						<button className="flex px-6 py-3 bg-black text-white rounded-3xl hover:bg-gray-800 transition-colors duration-300 cursor-pointer">
+						<button className="flex px-6 py-3 bg-black text-white rounded-3xl hover:bg-linear-to-r hover:from-blue-500 hover:to-purple-600 hover:scale-110 transition-colors duration-100 cursor-pointer">
 							Let&apos;s Connect <Mail className="ml-2" size={20} />
 						</button>
-						<button className="flex ml-4 px-6 py-3 bg-white text-black border-2 border-black rounded-3xl hover:bg-gray-50 transition-colors duration-300 cursor-pointer">
-							Download Resume <Download className="ml-2" size={20} />
-						</button>
+						<div className="ml-8 flex group justify-center items-center rounded-3xl bg-black hover:bg-linear-to-r hover:from-blue-500 hover:to-purple-600 p-0.5 cursor-pointer transition-all duration-150 hover:scale-110">
+							<div className="bg-white rounded-[calc(1.5rem-2px)] px-6 py-3">
+								<button className="flex items-center text-black bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text  transition-all duration-100 cursor-pointer">
+									<span className="group-hover:text-transparent">
+										Download Resume
+									</span>
+									<Download className="ml-2 group-hover:text-purple-600" size={20} />
+								</button>
+							</div>
+						</div>
 					</div>
 
 					{/* Social Links */}
