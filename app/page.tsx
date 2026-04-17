@@ -3,14 +3,15 @@ import Image from 'next/image';
 import linkinlogo from '../public/linkedin.svg';
 import gitHubLogo from '../public/github.svg';
 import { Titles } from '@/components';
+import  EmailLogo  from "../public/email.gif"
 
 export default function Home() {
 	// Note: Add Typing animation to display multiple of titles/Adjectives that describe me as a software developer, cloud Engineerand Data scientist.
 	return (
-		<main className="h-full w-full bg-gray-100 text-black overflow-y-scroll">
+		<main className="h-full w-full text-black overflow-y-scroll">
 			{/* Hero section */}
-			<header className="h-full w-full flex items-center justify-center bg-white">
-				<div className="flex flex-col items-center border-2 border-gray-300/40 rounded-lg px-2 py-8 shadow-lg min-w-[93%] max-w-[95%]">
+			<header className="h-full w-full flex items-center justify-center bg-gray-100">
+				<div className="flex flex-col items-center bg-white/80 border-2 border-gray-300/40 rounded-lg px-2 py-8 shadow-lg min-w-[93%] max-w-[95%]">
 					{/* Availability Tag */}
 					<div className="rounded-full p-0.5 bg-linear-to-r from-blue-500 to-purple-600 mb-2 animate-gradient lowercase animate-pulse duration-300">
 						<div className="bg-gray-100 rounded-full p-2">
@@ -23,26 +24,27 @@ export default function Home() {
 
 					{/* Call to Action */}
 					<div className=" flex flex-col justify-center mx-auto px-2 py-8 w-full">
-						<h1 className="text-5xl font-semibold item-end">
+						<h1 className="text-5xl font-semibold item-end text-slate-900">
 							Shaun Lesedi Modipane <Titles />
 						</h1>
 						<h2 className="text-3xl font-extralight mt-4 mx-auto text-gray-600/80 text-center max-w-[84%]">
-							Ready to bring technical talent to your next big project. Let&apos;s connect to
-							discuss how we can build something great together.
+							Ready to contribute software, cloud, and data expertise to your next project,
+							let&apos;s schedule a{' '}
+							<span className="bg-linear-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text underline underline-offset-4 animate-gradient">
+								Conversation and Start BUILDING!!
+							</span>
 						</h2>
 					</div>
 
 					{/* Call to Action Buttons */}
 					<div className="flex justify-center mt-2 items-center">
-						<button className="flex px-6 py-3 bg-black text-white rounded-3xl hover:bg-linear-to-r hover:from-blue-500 hover:to-purple-600 hover:scale-110 transition-colors duration-100 cursor-pointer">
+						<button className="flex px-6 py-3 bg-slate-900 text-white rounded-3xl hover:bg-linear-to-r hover:from-blue-500 hover:to-purple-600 hover:scale-110 transition-colors duration-100 cursor-pointer">
 							Let&apos;s Connect <Mail className="ml-2" size={20} />
 						</button>
-						<div className="ml-8 flex group justify-center items-center rounded-3xl bg-black hover:bg-linear-to-r hover:from-blue-500 hover:to-purple-600 p-0.5 cursor-pointer transition-all duration-150 hover:scale-110">
+						<div className="ml-8 flex group justify-center items-center rounded-3xl bg-slate-800 hover:bg-linear-to-r hover:from-blue-500 hover:to-purple-600 p-0.5 cursor-pointer transition-all duration-150 hover:scale-110">
 							<div className="bg-white rounded-[calc(1.5rem-2px)] px-6 py-3">
-								<button className="flex items-center text-black bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text  transition-all duration-100 cursor-pointer">
-									<span className="group-hover:text-transparent">
-										Download Resume
-									</span>
+								<button className="flex items-center text-slate-900 bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text  transition-all duration-100 cursor-pointer">
+									<span className="group-hover:text-transparent">Download Resume</span>
 									<Download className="ml-2 group-hover:text-purple-600" size={20} />
 								</button>
 							</div>
@@ -50,19 +52,19 @@ export default function Home() {
 					</div>
 
 					{/* Social Links */}
-					<div className="flex justify-center mt-8 space-x-4">
+					<div className="flex justify-center mt-8 space-x-4 text-slate-800">
 						<a
 							href="https://linkedin.com/in/shaunlesedi"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="text-black hover:text-blue-500 transition-colors duration-300 flex flex-col items-center">
+							className=" hover:text-blue-500 transition-colors duration-300 flex flex-col items-center">
 							<Image src={linkinlogo} alt="Logo" width={35} height={35} /> LinkedIn
 						</a>
 						<a
 							href="https://github.com/shaunlesedi"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="text-black hover:text-gray-500 transition-colors duration-300 flex flex-col items-center">
+							className=" hover:text-gray-500 transition-colors duration-300 flex flex-col items-center">
 							<Image src={gitHubLogo} alt="Logo" width={35} height={35} /> GitHub
 						</a>
 					</div>

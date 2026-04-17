@@ -3,7 +3,7 @@ import { Typewriter } from 'react-simple-typewriter';
 
 const Titles = () => {
 	return (
-		<span className="mt-2 rounded-lg p-2 shadow-lg font-light text-center">
+		<span className="mt-2 rounded-lg py-2 px-3 shadow-lg bg-white font-light text-center">
 			<span className="bg-linear-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text animate-gradient">
 				<Typewriter
 					words={[
