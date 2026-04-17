@@ -19,7 +19,7 @@ const Titles = () => {
 				/>
 			</span>
             <span className="ml-1 text-purple-500 animate-[blink-fast_0.4s_steps(1)_infinite]">
-                {"_"}
+                {"|"}
             </span>
 		</span>
 	);

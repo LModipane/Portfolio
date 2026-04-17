@@ -16,6 +16,14 @@ export const metadata: Metadata = {
 	title: 'Lesedi Shaun Modipane Portfolio',
 	description:
 		'Welcome to my digital repository. A curated database of my professional journey, blogs, and projects timeline. This space serves as a transparent look into my thinking process and current projects, designed for those who want to explore my work and follow my progress in real-time.',
+	icons: {
+		icon: '/person.svg',
+		apple: '/person.svg',
+		other: {
+			rel: 'icon',
+			url: '/person.svg',
+		},
+	}
 };
 
 export default function RootLayout({
