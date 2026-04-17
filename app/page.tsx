@@ -31,7 +31,7 @@ export default function Home() {
 							Ready to contribute software, cloud, and data expertise to your next project,
 							let&apos;s schedule a{' '}
 							<span className="bg-linear-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text underline underline-offset-4 animate-gradient">
-								Conversation and Start BUILDING!!
+								conversation and START BUILDING!!!
 							</span>
 						</h2>
 					</div>
