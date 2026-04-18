@@ -9,8 +9,7 @@ type Hero = {
 	myName: string;
 	myRoles: string[];
 };
-
-export const revalidate = 60;
+export const revalidate = 60; 
 
 export default async function Home() {
 	const heroQuery = `*[_type == "heroSection"][0]{myName,myRoles}`;
