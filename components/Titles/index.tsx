@@ -15,12 +15,10 @@ const Titles = () => {
 					cursor={false} // disable built-in cursor
 					typeSpeed={70}
 					deleteSpeed={20}
-                    delaySpeed={1000}
+					delaySpeed={1000}
 				/>
 			</span>
-            <span className="ml-1 text-purple-500 animate-[blink-fast_0.4s_steps(1)_infinite]">
-                {"|"}
-            </span>
+			<span className="ml-1 text-purple-500 animate-[blink-fast_0.6s_steps(1)_infinite]">✍🏿</span>
 		</span>
 	);
 };
