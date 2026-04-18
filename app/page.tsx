@@ -7,11 +7,14 @@ import { client as SanityClient } from '@/sanity/lib/client';
 
 type Hero = {
 	myName: string;
+	myRoles: string[];
 };
 
+export const revalidate = 5;
+
 export default async function Home() {
-	const heroQuery = `*[_type == "heroSection"][0]{myName}`;
-	const { myName } = await SanityClient.fetch<Hero>(heroQuery);
+	const heroQuery = `*[_type == "heroSection"][0]{myName,myRoles}`;
+	const { myName, myRoles } = await SanityClient.fetch<Hero>(heroQuery);
 
 	return (
 		<main className="h-full w-full text-black overflow-y-scroll">
@@ -31,7 +34,7 @@ export default async function Home() {
 					{/* Call to Action */}
 					<div className=" flex flex-col justify-center mx-auto px-4 py-8 w-full">
 						<h1 className="text-5xl font-semibold item-end text-slate-900">
-							{myName} <Titles />
+							{myName} <Titles roles={ myRoles} />
 						</h1>
 						<h2 className="text-3xl font-extralight mt-6 mx-auto text-gray-600/80 text-center max-w-[80%]">
 							Looking to contribute Software, Cloud, & Data expertise to your next project,

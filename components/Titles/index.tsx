@@ -1,18 +1,18 @@
 'use client';
 import { Typewriter } from 'react-simple-typewriter';
 
-const Titles = () => {
+type Props = {
+	roles: string[];
+};
+
+const Titles = ({ roles }: Props) => {
 	return (
 		<span className="mt-2 rounded-lg py-2 px-3 shadow-lg bg-white font-light text-center">
-			<span className="bg-linear-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text animate-gradient">
+			<span className="bg-linear-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text animate-gradient whitespace-nowrap text-nowrap">
 				<Typewriter
-					words={[
-						'Excellent Software Developer',
-						'Experienced Cloud Engineer',
-						'Exceptional Data Scientist',
-					]}
 					loop={0}
-					cursor={false} // disable built-in cursor
+					words={roles}
+					cursor={false}
 					typeSpeed={70}
 					deleteSpeed={20}
 					delaySpeed={1000}
