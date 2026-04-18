@@ -3,9 +3,16 @@ import { Titles } from '@/components';
 import gitHubLogo from '../public/github.svg';
 import linkinlogo from '../public/linkedin.svg';
 import { Download, Mail, Sparkles } from 'lucide-react';
+import { client as SanityClient } from '@/sanity/lib/client';
 
-export default function Home() {
-	// Note: Add Typing animation to display multiple of titles/Adjectives that describe me as a software developer, cloud Engineerand Data scientist.
+type Hero = {
+	myName: string;
+};
+
+export default async function Home() {
+	const heroQuery = `*[_type == "heroSection"][0]{myName}`;
+	const { myName } = await SanityClient.fetch<Hero>(heroQuery);
+
 	return (
 		<main className="h-full w-full text-black overflow-y-scroll">
 			{/* Hero section */}
@@ -24,7 +31,7 @@ export default function Home() {
 					{/* Call to Action */}
 					<div className=" flex flex-col justify-center mx-auto px-4 py-8 w-full">
 						<h1 className="text-5xl font-semibold item-end text-slate-900">
-							Lesedi Shaun Modipane <Titles />
+							{myName} <Titles />
 						</h1>
 						<h2 className="text-3xl font-extralight mt-6 mx-auto text-gray-600/80 text-center max-w-[80%]">
 							Looking to contribute Software, Cloud, & Data expertise to your next project,
