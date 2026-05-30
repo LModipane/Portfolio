@@ -8,14 +8,17 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 
 import {
 	Mail,
+	Clock,
+	MapPin,
 	Sparkles,
 	Download,
+	Newspaper,
 	FileCode2,
 	FileBraces,
 	FolderKanban,
+	CalendarFold,
 	ExternalLink,
-	Newspaper,
-	Clock,
+	GraduationCap,
 } from 'lucide-react';
 
 type Hero = {
@@ -59,7 +62,7 @@ type Career = {
 	description: string;
 	locationType: LocationModel;
 	tools: { _id: string; title: string }[];
-	organisation: { name: string; logoUrl: string; location: string };
+	organisation: { name: string; logoUrl: string; location: string; link: string };
 };
 
 export const dynamic = 'force-dynamic';
@@ -101,7 +104,7 @@ export default async function Home() {
 		"_id": slug.current,
 		"tools": technologies[]->{"_id":slug.current, title},
 		role, locationType, startDate, endDate, description,
-		"organisation": {"name": organisation, "logoUrl": organisationLogo.asset -> url, "location":officeLocation}
+		"organisation": {"name": organisation, "logoUrl": organisationLogo.asset -> url, "location":officeLocation, "link":organisationLink}
 	}`;
 	const career = await SanityClient.fetch<Career[]>(careerQuery);
 
@@ -276,7 +279,7 @@ export default async function Home() {
 						))}
 					</div>
 				</div>
-			</section>verceel 
+			</section>
 			<footer
 				id="footer"
 				className="h-full w-full flex flex-col items-center justify-center p-8 bg-black text-white">
@@ -382,7 +385,7 @@ const BlogCard = ({ _id, headline, imageCardUrl, description, publishedAt }: Blo
 				</div>
 				<div className="flex flex-col gap-2 p-2">
 					<span className="flex items-center gap-3 text-sm">
-						<Clock size={15} /> {formatDate(publishedAt)}
+						<Clock size={15} /> {blogDate(publishedAt)}
 					</span>
 					<h3 className="text-lg font-bold capitalize">{headline}</h3>
 					<p className="text-sm line-clamp-3">{description}</p>
@@ -396,7 +399,7 @@ const BlogCard = ({ _id, headline, imageCardUrl, description, publishedAt }: Blo
 	</div>
 );
 
-export function formatDate(dateString: string): string {
+function blogDate(dateString: string): string {
 	const date = new Date(dateString);
 	const options: Intl.DateTimeFormatOptions = {
 		day: '2-digit',
@@ -410,4 +413,63 @@ export function formatDate(dateString: string): string {
 	return new Intl.DateTimeFormat('en-GB', options).format(date);
 }
 
-const CareerCard = ({}: Career & { index: number }) => <div>Career</div>;
+const CareerCard = ({
+	role,
+	tools,
+	endDate,
+	startDate,
+	description,
+	locationType,
+	organisation: { name, location, link, logoUrl },
+}: Career & { index: number }) => (
+	<div className="w-100 h-112.5 flex flex-col p-4 m-1 border-2 border-slate-600 rounded-2xl shadow-xl">
+		<div className="flex items-center gap-2">
+			<div className="flex flex-col">
+				<h5 className="font-bold text-lg">{role}</h5>
+				<Link href={link}>
+					<div className="flex items-center gap-2">
+						<div className="relative w-7 h-7  overflow-hidden">
+							<Image
+								src={logoUrl}
+								alt={`${name} - logo`}
+								fill
+								className="object-cover object-center rounded-full"
+							/>
+						</div>
+						<span>{name}</span>
+					</div>
+				</Link>
+			</div>
+			<span className="border-2 border-gray-700 p-2 rounded-full ml-auto">
+				<GraduationCap size={30} />
+			</span>
+		</div>
+		<div className="flex gap-2 text-xs items-center mt-3">
+			<CalendarFold size={15} />
+			<span>{careerData(startDate)}</span>-<span>{careerData(endDate)}</span>
+			<MapPin size={15} />
+			<span>{locationType === 'in-office' ? location : locationType}</span>
+		</div>
+		<div className="mt-4">
+			<p>{description}</p>
+		</div>
+		<div className="mt-4">
+			{tools.map(obj => (
+				<div key={obj._id} className="bg-gray-200 w-fit text-gray-800 p-2 rounded-lg">
+					{obj.title}
+				</div>
+			))}
+		</div>
+	</div>
+);
+
+export function careerData(dateString: string): string {
+	const date = new Date(dateString);
+	const options: Intl.DateTimeFormatOptions = {
+		month: 'short', // 'Dec'
+		year: 'numeric',
+		day: '2-digit',
+		timeZone: 'Africa/Johannesburg',
+	};
+	return new Intl.DateTimeFormat('en-GB', options).format(date);
+}
