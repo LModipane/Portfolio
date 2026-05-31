@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 import Titles from '@/components/Titles';
 import gitHubLogo from '../public/github.svg';
 import linkinlogo from '../public/linkedin.svg';
@@ -57,7 +58,7 @@ type LocationModel = 'in-office' | 'hybrid' | 'remote';
 type Career = {
 	_id: string;
 	role: string;
-	endDate: string;
+	endDate: string | undefined;
 	startDate: string;
 	description: string;
 	locationType: LocationModel;
@@ -68,45 +69,88 @@ type Career = {
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-	const heroQuery = `*[_type == "heroSection"][0]{myName,myRoles}`;
-	const { myName, myRoles } = await SanityClient.fetch<Hero>(heroQuery);
+	const querys = {
+		// Here is where i query for my hero section
+		hero: `*[_type == "heroSection"][0]{
+					myName,
+					myRoles
+				},`,
+		
+		// here I query for projects sections
+		projects: `*[_type == "projects"]{
+					"_id": slug.current,
+					title,
+					"logoUrl": logo.asset->url,
+					liveLink,
+					githubLink,
+					description,
+					"_id": slug.current,
+					"backgroundImageUrl": backgroundImage.asset->url,
+					"tools": technologies[]->{
+							"_id": slug.current,
+							title
+						},
+				},`,
 
-	const projectsQuery = `*[_type == "projects"]{
-			title,
-			liveLink,
-			githubLink,
-			description,
-			"_id":slug.current,
-			"logoUrl": logo.asset->url,
-			"backgroundImageUrl": backgroundImage.asset->url,
-			"tools": technologies[]->{"_id":slug.current, title}
-		}`;
-	const projects = await SanityClient.fetch<Project[]>(projectsQuery);
+		// here are query for my skills section
+		skills: `*[_type == "skills"]{
+					title,
+					description,
+					"_id": slug.current,
+					"iconUrl": icon.asset->url
+				},`,
 
-	const skillsQuery = `*[_type == "skills"]{
-		title,
-		description,
-		"_id":slug.current,
-		"iconUrl": icon.asset->url,
-	}`;
-	const skills = await SanityClient.fetch<Skill[]>(skillsQuery);
+		// here is query for by blog section
+		blogs: `*[_type == "blogs"]{
+					headline,
+					description,
+					publishedAt,
+					"_id": slug.current,
+					"imageCardUrl": image.asset->url
+				},`,
 
-	const blogQuery = `*[_type == "blogs"]{
-		headline,
-		description,
-		publishedAt,
-		"_id": slug.current,
-		"imageCardUrl": image.asset -> url,
-	}`;
-	const blogs = await SanityClient.fetch<Blog[]>(blogQuery);
+		// here is query for career section:
+		career: `*[_type == "career"] | order(startDate desc){
+					role,
+					locationType,
+					startDate,
+					endDate,
+					description,
+					"_id": slug.current,
+					"tools": technologies[]->{
+						"_id": slug.current,
+						title
+					},
+					"organisation": {
+						"name": organisation,
+						"logoUrl": organisationLogo.asset->url,
+						"location": officeLocation,
+						"link": organisationLink
+					},
+				},`,
+	};
 
-	const careerQuery = `*[_type == "career"]{
-		"_id": slug.current,
-		"tools": technologies[]->{"_id":slug.current, title},
-		role, locationType, startDate, endDate, description,
-		"organisation": {"name": organisation, "logoUrl": organisationLogo.asset -> url, "location":officeLocation, "link":organisationLink}
-	}`;
-	const career = await SanityClient.fetch<Career[]>(careerQuery);
+	const query = `{
+				"hero": ${querys.hero}
+				"blogs": ${querys.blogs}
+				"skills": ${querys.skills}
+				"career": ${querys.career}
+				"projects": ${querys.projects}
+				}`;
+
+	const {
+		blogs,
+		skills,
+		career,
+		projects,
+		hero: { myName, myRoles },
+	} = await SanityClient.fetch<{
+		hero: Hero;
+		blogs: Blog[];
+		skills: Skill[];
+		career: Career[];
+		projects: Project[];
+	}>(query);
 
 	return (
 		<main className="h-full w-full text-black overflow-y-scroll">
@@ -273,7 +317,7 @@ export default async function Home() {
 						Career Journey
 					</h2>
 					<hr className="h-2 border-0 bg-linear-to-r from-blue-500 to-purple-500" />
-					<div className="mt-6">
+					<div className="mt-6 flex flex-col">
 						{career.map((obj, index) => (
 							<CareerCard key={obj._id} {...obj} index={index} />
 						))}
@@ -390,8 +434,8 @@ const BlogCard = ({ _id, headline, imageCardUrl, description, publishedAt }: Blo
 					<h3 className="text-lg font-bold capitalize">{headline}</h3>
 					<p className="text-sm line-clamp-3">{description}</p>
 					<div className="flex justify-end gap-4">
-						<span>Read time: 6 min</span>
-						<span>✨: 6</span>
+						<span className="bg-gray-200 px-2 py-1 rounded-xl">Read time: 6 min</span>
+						<span className="bg-gray-200 px-2 py-1 rounded-xl">✨: 6</span>
 					</div>
 				</div>
 			</div>
@@ -416,49 +460,73 @@ function blogDate(dateString: string): string {
 const CareerCard = ({
 	role,
 	tools,
+	index,
 	endDate,
 	startDate,
 	description,
 	locationType,
 	organisation: { name, location, link, logoUrl },
 }: Career & { index: number }) => (
-	<div className="w-100 h-112.5 flex flex-col p-4 m-1 border-2 border-slate-600 rounded-2xl shadow-xl">
-		<div className="flex items-center gap-2">
-			<div className="flex flex-col">
-				<h5 className="font-bold text-lg">{role}</h5>
-				<Link href={link}>
-					<div className="flex items-center gap-2">
-						<div className="relative w-7 h-7  overflow-hidden">
-							<Image
-								src={logoUrl}
-								alt={`${name} - logo`}
-								fill
-								className="object-cover object-center rounded-full"
-							/>
+	<div className={cn('relative flex w-full h-fit', index % 2 === 0 ? 'flex-row-reverse' : '')}>
+		<div
+			className={cn(
+				'absolute top-0 z-10 min-w-[50%] -ml-0.75 min-h-full border-gray-500',
+				index % 2 === 0 ? 'border-l-4 left-[50%]' : 'border-r-4 right-[50%]',
+			)}
+		/>
+		<div className={cn('absolute top-[15%] right-[50%] -mr-2 w-5 h-5 bg-gray-500 rounded-full')} />
+		<div
+			className={cn(
+				'w-100 h-112.5 z-20 flex flex-end flex-col hover:border-0 border-2 border-slate-600 rounded-lg shadow-xl text-slate-600 bg-white hover:scale-105 overflow-hidden',
+				index % 2 === 0 ? 'mr-auto' : 'ml-auto',
+			)}>
+			<div className="bg-gray-200 min-h-full w-full hover:p-0.75 rounded-lg bg-linear-to-r from-blue-500 to-purple-600 animate-gradient overflow-hidden group/card">
+				<div className="bg-white h-full w-full rounded-lg flex flex-col p-4 overflow-hidden ">
+					<div className=" flex items-center gap-2 mt-5">
+						<div className="flex flex-col">
+							<h5 className="font-bold text-xl mb-3 text-slate-800">{role}</h5>
+							<Link href={link}>
+								<div className="flex items-center gap-2 text-md group hover:underline">
+									<div className="relative w-5 h-5 overflow-hidden">
+										<Image
+											src={logoUrl}
+											alt={`${name} - logo`}
+											fill
+											className="object-cover object-center rounded-full"
+										/>
+									</div>
+									<span>{name}</span>
+									<ExternalLink size={15} className="hidden group-hover:block text-slate-900" />
+								</div>
+							</Link>
 						</div>
-						<span>{name}</span>
+						<span className="border-2 border-gray-700 group-hover/card:border-0 bg-gray-400 group-hover/card:bg-linear-to-tr from-blue-500 to-purple-600 p-2 rounded-full ml-auto text-gray-300 group-hover/card:text-white">
+							<GraduationCap size={30} />
+						</span>
 					</div>
-				</Link>
-			</div>
-			<span className="border-2 border-gray-700 p-2 rounded-full ml-auto">
-				<GraduationCap size={30} />
-			</span>
-		</div>
-		<div className="flex gap-2 text-xs items-center mt-3">
-			<CalendarFold size={15} />
-			<span>{careerData(startDate)}</span>-<span>{careerData(endDate)}</span>
-			<MapPin size={15} />
-			<span>{locationType === 'in-office' ? location : locationType}</span>
-		</div>
-		<div className="mt-4">
-			<p>{description}</p>
-		</div>
-		<div className="mt-4">
-			{tools.map(obj => (
-				<div key={obj._id} className="bg-gray-200 w-fit text-gray-800 p-2 rounded-lg">
-					{obj.title}
+					<div className="flex gap-4 text-xs items-center mt-3 text-slate-800">
+						<div className="flex gap-1 items-center">
+							<CalendarFold size={17} />
+							<span>{careerData(startDate)}</span>-
+							{endDate ? <span>{careerData(endDate)}</span> : 'Present'}
+						</div>
+						<div className="flex gap-1 items-center">
+							<MapPin size={17} />
+							<span>{locationType === 'in-office' ? location : locationType}</span>
+						</div>
+					</div>
+					<div className="mt-4 text-slate-700 text-md">
+						<p>{description}</p>
+					</div>
+					<div className="mt-4">
+						{tools.map(obj => (
+							<div key={obj._id} className="bg-gray-200 w-fit text-gray-800 p-2 rounded-lg">
+								{obj.title}
+							</div>
+						))}
+					</div>
 				</div>
-			))}
+			</div>
 		</div>
 	</div>
 );
